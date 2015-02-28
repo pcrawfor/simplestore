@@ -30,5 +30,3 @@ It doesn't do anything fancy and has not yet been vetted as goroutine safe so fa
 # Notes
 
 The keys used in the store must be of type []byte but the value can be any type, the type will be registered with gob when the value is set and encoded by the underlying gob encoder appropriately.  When reading the value back out you must assert the correct type for the stored value.
-
-All values are stored as interface{} types when written to disk.
