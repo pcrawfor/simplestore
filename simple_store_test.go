@@ -6,7 +6,7 @@ import (
 )
 
 func initStore() *SimpleStore {
-	return NewSimpleStore("./test_store.gob")
+	return New("./test_store.gob")
 }
 
 func cleanupStore(t *testing.T) {

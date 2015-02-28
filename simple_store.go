@@ -18,7 +18,7 @@ type SimpleStore struct {
 }
 
 // NewSimpleStore instantiates a new store with the given filepath either creating or updating the given file
-func NewSimpleStore(filePath string) *SimpleStore {
+func New(filePath string) *SimpleStore {
 	s := SimpleStore{entries: []*entry{}, filePath: filePath}
 	s.loadEntries()
 	return &s
