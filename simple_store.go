@@ -17,7 +17,7 @@ type SimpleStore struct {
 	filePath string
 }
 
-// NewSimpleStore instantiates a new store with the given filepath either creating or updating the given file
+// New instantiates a new store with the given filepath either creating or updating the given file
 func New(filePath string) *SimpleStore {
 	s := SimpleStore{entries: []*entry{}, filePath: filePath}
 	s.loadEntries()
