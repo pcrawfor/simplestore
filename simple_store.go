@@ -48,6 +48,14 @@ func (s *Store) Set(key []byte, value interface{}) {
 	s.entries = append(s.entries, &entry{Key: string(key), Value: value})
 }
 
+func (s *Store) Remove(key []byte) {
+	for i, v := range s.entries {
+		if string(key) == v.Key {
+			s.entries = append(s.entries[:i], s.entries[i+1:]...)
+		}
+	}
+}
+
 // Save writes the current state of the store to the file on disk
 func (s *Store) Save() error {
 	f := s.getFile()

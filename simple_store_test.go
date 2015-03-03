@@ -96,3 +96,21 @@ func TestSimpleStoreSaveAndLoad(t *testing.T) {
 
 	cleanupStore(t)
 }
+
+func TestSimpleStoreAddRemove(t *testing.T) {
+	store := initStore()
+
+	store.Set([]byte("foo"), "test")
+	v := store.Get([]byte("foo"))
+	if v == nil {
+		t.Error("Value should not be nil")
+	}
+
+	store.Remove([]byte("foo"))
+	v = store.Get([]byte("foo"))
+	if v != nil {
+		t.Error("Value should be nil")
+	}
+
+	cleanupStore(t)
+}
