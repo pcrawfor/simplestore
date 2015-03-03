@@ -11,21 +11,21 @@ type entry struct {
 	Value interface{}
 }
 
-// SimpleStore is a basic key value store which writes to a gob file on local disk on save
-type SimpleStore struct {
+// Store is a basic key value store which writes to a gob file on local disk on save
+type Store struct {
 	entries  []*entry
 	filePath string
 }
 
 // New instantiates a new store with the given filepath either creating or updating the given file
-func New(filePath string) *SimpleStore {
-	s := SimpleStore{entries: []*entry{}, filePath: filePath}
+func New(filePath string) *Store {
+	s := Store{entries: []*entry{}, filePath: filePath}
 	s.loadEntries()
 	return &s
 }
 
 // Get retrieves the value for a given key or returns nil if the key does not exist
-func (s *SimpleStore) Get(key []byte) interface{} {
+func (s *Store) Get(key []byte) interface{} {
 	for _, v := range s.entries {
 		if string(key) == v.Key {
 			return v.Value
@@ -36,7 +36,7 @@ func (s *SimpleStore) Get(key []byte) interface{} {
 }
 
 // Set sets the value of the given key in the store - only accepts string values
-func (s *SimpleStore) Set(key []byte, value interface{}) {
+func (s *Store) Set(key []byte, value interface{}) {
 	gob.Register(value)
 	for _, v := range s.entries {
 		if string(key) == v.Key {
@@ -49,7 +49,7 @@ func (s *SimpleStore) Set(key []byte, value interface{}) {
 }
 
 // Save writes the current state of the store to the file on disk
-func (s *SimpleStore) Save() error {
+func (s *Store) Save() error {
 	f := s.getFile()
 	w := bufio.NewWriter(f)
 	enc := gob.NewEncoder(w)
@@ -63,7 +63,7 @@ func (s *SimpleStore) Save() error {
 	return nil
 }
 
-func (s *SimpleStore) loadEntries() error {
+func (s *Store) loadEntries() error {
 	r := bufio.NewReader(s.getFile())
 	dec := gob.NewDecoder(r)
 	err := dec.Decode(&s.entries)
@@ -78,7 +78,7 @@ func (s *SimpleStore) loadEntries() error {
 	return nil
 }
 
-func (s *SimpleStore) getFile() *os.File {
+func (s *Store) getFile() *os.File {
 	f, err := os.OpenFile(s.filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		panic(err.Error())

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func initStore() *SimpleStore {
+func initStore() *Store {
 	return New("./test_store.gob")
 }
 
