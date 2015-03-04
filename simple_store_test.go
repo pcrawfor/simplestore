@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func initStore() *Store {
-	return New("./test_store.gob")
+func initStore(types []interface{}) *Store {
+	return New("./test_store.gob", types)
 }
 
 func cleanupStore(t *testing.T) {
@@ -17,7 +17,7 @@ func cleanupStore(t *testing.T) {
 }
 
 func TestSimpleStoreSaveString(t *testing.T) {
-	store := initStore()
+	store := initStore(nil)
 
 	e := store.Save()
 	if e != nil {
@@ -44,7 +44,7 @@ func TestSimpleStoreSaveString(t *testing.T) {
 }
 
 func TestSimpleStoreSaveOthers(t *testing.T) {
-	store := initStore()
+	store := initStore([]interface{}{[]bool{}, map[string]int{}})
 
 	store.Set("big", map[string]int{"hi": 1})
 	v := store.Get("big")
@@ -69,11 +69,17 @@ func TestSimpleStoreSaveOthers(t *testing.T) {
 		t.Error("Array value incorrect")
 	}
 
+	store.Set("small", "b")
+	v = store.Get("small")
+	if v == nil {
+		t.Error("Value should not be nil")
+	}
+
 	cleanupStore(t)
 }
 
 func TestSimpleStoreSaveAndLoad(t *testing.T) {
-	store := initStore()
+	store := initStore([]interface{}{map[string]string{}})
 
 	store.Set("a", map[string]string{"one": "two", "three": "four"})
 	e := store.Save()
@@ -81,7 +87,7 @@ func TestSimpleStoreSaveAndLoad(t *testing.T) {
 		t.Error("Error saving ", e.Error())
 	}
 
-	store2 := initStore()
+	store2 := initStore([]interface{}{map[string]string{}})
 	v := store2.Get("a")
 
 	if v == nil {
@@ -97,8 +103,37 @@ func TestSimpleStoreSaveAndLoad(t *testing.T) {
 	cleanupStore(t)
 }
 
+func TestComplexStoreSaveReload(t *testing.T) {
+	store := initStore([]interface{}{[]int{}, map[int]string{}})
+
+	store.Set("one", []int{1, 2, 3})
+	store.Set("two", map[int]string{1: "one", 2: "two"})
+	store.Save()
+
+	store2 := initStore([]interface{}{[]int{}, map[int]string{}})
+	v := store2.Get("one")
+	b := v.([]int)
+	if b == nil {
+		t.Error("Value should not be nil")
+	}
+	if len(b) != 3 || (len(b) == 2 && b[1] != 2) {
+		t.Error("Value is invalid")
+	}
+
+	v = store2.Get("two")
+	c := v.(map[int]string)
+	if c == nil {
+		t.Error("Value should not be nil")
+	}
+	if c[1] != "one" || c[2] != "two" {
+		t.Error("Map value is invalid")
+	}
+
+	cleanupStore(t)
+}
+
 func TestSimpleStoreAddRemove(t *testing.T) {
-	store := initStore()
+	store := initStore(nil)
 
 	store.Set("foo", "test")
 	v := store.Get("foo")

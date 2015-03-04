@@ -13,21 +13,35 @@ type entry struct {
 
 // Store is a basic key value store which writes to a gob file on local disk on save
 type Store struct {
-	entries  []*entry
 	filePath string
+	entries  []*entry
 }
 
+/*type storedData struct {
+	registrations []string
+	entries       []*entry
+}*/
+
 // New instantiates a new store with the given filepath either creating or updating the given file
-func New(filePath string) *Store {
+func New(filePath string, types []interface{}) *Store {
 	s := Store{entries: []*entry{}, filePath: filePath}
+	if len(types) > 0 {
+		s.registerTypes(types)
+	}
 	s.loadEntries()
 	return &s
+}
+
+func (s *Store) registerTypes(types []interface{}) {
+	for _, t := range types {
+		gob.Register(t)
+	}
 }
 
 // Get retrieves the value for a given key or returns nil if the key does not exist
 func (s *Store) Get(key string) interface{} {
 	for _, v := range s.entries {
-		if string(key) == v.Key {
+		if key == v.Key {
 			return v.Value
 		}
 	}
@@ -37,20 +51,21 @@ func (s *Store) Get(key string) interface{} {
 
 // Set sets the value of the given key in the store - only accepts string values
 func (s *Store) Set(key string, value interface{}) {
-	gob.Register(value)
-	for _, v := range s.entries {
-		if string(key) == v.Key {
+	for i, _ := range s.entries {
+		v := s.entries[i]
+		if key == v.Key {
 			v.Value = value
 			return
 		}
+
 	}
 
-	s.entries = append(s.entries, &entry{Key: string(key), Value: value})
+	s.entries = append(s.entries, &entry{Key: key, Value: value})
 }
 
 func (s *Store) Remove(key string) {
 	for i, v := range s.entries {
-		if string(key) == v.Key {
+		if key == v.Key {
 			s.entries = append(s.entries[:i], s.entries[i+1:]...)
 		}
 	}
