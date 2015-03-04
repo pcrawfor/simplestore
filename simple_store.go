@@ -17,11 +17,6 @@ type Store struct {
 	entries  []*entry
 }
 
-/*type storedData struct {
-	registrations []string
-	entries       []*entry
-}*/
-
 // New instantiates a new store with the given filepath either creating or updating the given file
 func New(filePath string, types []interface{}) *Store {
 	s := Store{entries: []*entry{}, filePath: filePath}
