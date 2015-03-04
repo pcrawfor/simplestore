@@ -25,7 +25,7 @@ func New(filePath string) *Store {
 }
 
 // Get retrieves the value for a given key or returns nil if the key does not exist
-func (s *Store) Get(key []byte) interface{} {
+func (s *Store) Get(key string) interface{} {
 	for _, v := range s.entries {
 		if string(key) == v.Key {
 			return v.Value
@@ -36,7 +36,7 @@ func (s *Store) Get(key []byte) interface{} {
 }
 
 // Set sets the value of the given key in the store - only accepts string values
-func (s *Store) Set(key []byte, value interface{}) {
+func (s *Store) Set(key string, value interface{}) {
 	gob.Register(value)
 	for _, v := range s.entries {
 		if string(key) == v.Key {
@@ -48,7 +48,7 @@ func (s *Store) Set(key []byte, value interface{}) {
 	s.entries = append(s.entries, &entry{Key: string(key), Value: value})
 }
 
-func (s *Store) Remove(key []byte) {
+func (s *Store) Remove(key string) {
 	for i, v := range s.entries {
 		if string(key) == v.Key {
 			s.entries = append(s.entries[:i], s.entries[i+1:]...)

@@ -24,13 +24,13 @@ func TestSimpleStoreSaveString(t *testing.T) {
 		t.Error("Error saving store " + e.Error())
 	}
 
-	store.Set([]byte("foo"), "bar")
-	v := store.Get([]byte("foo"))
+	store.Set("foo", "bar")
+	v := store.Get("foo")
 	if v != "bar" {
 		t.Error("Value not found")
 	}
 
-	v = store.Get([]byte("bar"))
+	v = store.Get("bar")
 	if v != nil {
 		t.Error("Value should be nil")
 	}
@@ -46,8 +46,8 @@ func TestSimpleStoreSaveString(t *testing.T) {
 func TestSimpleStoreSaveOthers(t *testing.T) {
 	store := initStore()
 
-	store.Set([]byte("big"), map[string]int{"hi": 1})
-	v := store.Get([]byte("big"))
+	store.Set("big", map[string]int{"hi": 1})
+	v := store.Get("big")
 	if v == nil {
 		t.Error("Value should not be nil")
 	}
@@ -57,9 +57,9 @@ func TestSimpleStoreSaveOthers(t *testing.T) {
 		t.Error("stored map value is incorrect")
 	}
 
-	store.Set([]byte("small"), []bool{true, false, true})
+	store.Set("small", []bool{true, false, true})
 
-	v = store.Get([]byte("small"))
+	v = store.Get("small")
 	if v == nil {
 		t.Error("Value should not be nil")
 	}
@@ -75,14 +75,14 @@ func TestSimpleStoreSaveOthers(t *testing.T) {
 func TestSimpleStoreSaveAndLoad(t *testing.T) {
 	store := initStore()
 
-	store.Set([]byte("a"), map[string]string{"one": "two", "three": "four"})
+	store.Set("a", map[string]string{"one": "two", "three": "four"})
 	e := store.Save()
 	if e != nil {
 		t.Error("Error saving ", e.Error())
 	}
 
 	store2 := initStore()
-	v := store2.Get([]byte("a"))
+	v := store2.Get("a")
 
 	if v == nil {
 		t.Error("Value should not be nil")
@@ -100,14 +100,14 @@ func TestSimpleStoreSaveAndLoad(t *testing.T) {
 func TestSimpleStoreAddRemove(t *testing.T) {
 	store := initStore()
 
-	store.Set([]byte("foo"), "test")
-	v := store.Get([]byte("foo"))
+	store.Set("foo", "test")
+	v := store.Get("foo")
 	if v == nil {
 		t.Error("Value should not be nil")
 	}
 
-	store.Remove([]byte("foo"))
-	v = store.Get([]byte("foo"))
+	store.Remove("foo")
+	v = store.Get("foo")
 	if v != nil {
 		t.Error("Value should be nil")
 	}
