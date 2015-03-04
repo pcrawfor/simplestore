@@ -63,6 +63,16 @@ func (s *Store) Set(key string, value interface{}) {
 	s.entries = append(s.entries, &entry{Key: key, Value: value})
 }
 
+func (s *Store) Exists(key string) bool {
+	for i, _ := range s.entries {
+		v := s.entries[i]
+		if key == v.Key {
+			return true
+		}
+	}
+	return false
+}
+
 func (s *Store) Remove(key string) {
 	for i, v := range s.entries {
 		if key == v.Key {
