@@ -54,7 +54,7 @@ func TestSimpleStoreSaveOthers(t *testing.T) {
 
 	m := v.(map[string]int)
 	if m["hi"] != 1 {
-		t.Error("stored map value is incorrect")
+		t.Error("stored map value is incorrect expected key hi == 1, got key hi ==", m["hi"])
 	}
 
 	store.Set("small", []bool{true, false, true})
@@ -66,7 +66,7 @@ func TestSimpleStoreSaveOthers(t *testing.T) {
 
 	a := v.([]bool)
 	if a[1] != false {
-		t.Error("Array value incorrect")
+		t.Error("Array value incorrect expected index 1 == false, got index 1 ==", a[1])
 	}
 
 	store.Set("small", "b")
@@ -97,7 +97,7 @@ func TestSimpleStoreSaveAndLoad(t *testing.T) {
 	m := v.(map[string]string)
 
 	if m["three"] != "four" {
-		t.Error("Error values loaded in store do not match")
+		t.Error("Values loaded in store do not match expected key three == four got key three ==", m["three"])
 	}
 
 	cleanupStore(t)
@@ -117,7 +117,7 @@ func TestComplexStoreSaveReload(t *testing.T) {
 		t.Error("Value should not be nil")
 	}
 	if len(b) != 3 || (len(b) == 2 && b[1] != 2) {
-		t.Error("Value is invalid")
+		t.Error("Value is invalid expected length of b to == 2 and key 1 to == 2 but got length:", len(b), "and key 1 ==", b[1])
 	}
 
 	v = store2.Get("two")
@@ -126,7 +126,7 @@ func TestComplexStoreSaveReload(t *testing.T) {
 		t.Error("Value should not be nil")
 	}
 	if c[1] != "one" || c[2] != "two" {
-		t.Error("Map value is invalid")
+		t.Error("Map value is invalid, expected key 1 to == one and key 2 to == two but got: key 1 ==", c[1], "and key 2 ==", c[2])
 	}
 
 	cleanupStore(t)
