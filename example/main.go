@@ -29,4 +29,10 @@ func main() {
 	fmt.Println("Map: ", mapVal)
 	// value for key "a" is in the store in memory but if we don't call Save it won't be written to disk
 	store.Save()
+
+	keys := store.Keys()
+	fmt.Println("Keys: ", keys)
+
+	values := store.Values()
+	fmt.Println("Values: ", values)
 }

@@ -46,7 +46,7 @@ func (s *Store) Get(key string) interface{} {
 
 // Set sets the value of the given key in the store - only accepts string values
 func (s *Store) Set(key string, value interface{}) {
-	for i, _ := range s.entries {
+	for i := range s.entries {
 		v := s.entries[i]
 		if key == v.Key {
 			v.Value = value
@@ -58,8 +58,9 @@ func (s *Store) Set(key string, value interface{}) {
 	s.entries = append(s.entries, &entry{Key: key, Value: value})
 }
 
+// Exists checks the existance of a key in the store and returns a bool
 func (s *Store) Exists(key string) bool {
-	for i, _ := range s.entries {
+	for i := range s.entries {
 		v := s.entries[i]
 		if key == v.Key {
 			return true
@@ -68,12 +69,31 @@ func (s *Store) Exists(key string) bool {
 	return false
 }
 
+// Remove deletes and entry from the store list
 func (s *Store) Remove(key string) {
 	for i, v := range s.entries {
 		if key == v.Key {
 			s.entries = append(s.entries[:i], s.entries[i+1:]...)
 		}
 	}
+}
+
+// Values returns the slice of values currently stored
+func (s *Store) Values() []interface{} {
+	vals := []interface{}{}
+	for _, v := range s.entries {
+		vals = append(vals, v.Value)
+	}
+	return vals
+}
+
+// Keys returns the slice of keys currently stored
+func (s *Store) Keys() []interface{} {
+	keys := []interface{}{}
+	for _, v := range s.entries {
+		keys = append(keys, v.Key)
+	}
+	return keys
 }
 
 // Save writes the current state of the store to the file on disk

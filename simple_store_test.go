@@ -149,3 +149,42 @@ func TestSimpleStoreAddRemove(t *testing.T) {
 
 	cleanupStore(t)
 }
+
+func TestValues(t *testing.T) {
+	store := initStore(nil)
+
+	store.Set("a", "one")
+	store.Set("b", "two")
+	store.Set("c", "three")
+
+	l := store.Values()
+	if len(l) != 3 {
+		t.Error("Values list is not valid")
+	}
+
+	if l[1].(string) != "two" {
+		t.Error("List value is invalid expected: two got ", l[1].(string))
+	}
+
+	cleanupStore(t)
+}
+
+func TestKeys(t *testing.T) {
+	store := initStore(nil)
+
+	store.Set("a", "one")
+	store.Set("b", "two")
+	store.Set("c", "three")
+	store.Set("d", "four")
+
+	k := store.Keys()
+	if len(k) != 4 {
+		t.Error("Keys list is not valid")
+	}
+
+	if k[3].(string) != "d" {
+		t.Error("List key is invalid expected: d got ", k[3].(string))
+	}
+
+	cleanupStore(t)
+}
