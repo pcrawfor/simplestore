@@ -14,12 +14,12 @@ type entry struct {
 // Store is a basic key value store which writes to a gob file on local disk on save
 type Store struct {
 	filePath string
-	entries  []*entry
+	entries  []entry
 }
 
 // New instantiates a new store with the given filepath either creating or updating the given file
 func New(filePath string, types []interface{}) *Store {
-	s := Store{entries: []*entry{}, filePath: filePath}
+	s := Store{entries: []entry{}, filePath: filePath}
 	if len(types) > 0 {
 		s.registerTypes(types)
 	}
@@ -55,7 +55,7 @@ func (s *Store) Set(key string, value interface{}) {
 
 	}
 
-	s.entries = append(s.entries, &entry{Key: key, Value: value})
+	s.entries = append(s.entries, entry{Key: key, Value: value})
 }
 
 // Exists checks the existance of a key in the store and returns a bool
@@ -117,7 +117,7 @@ func (s *Store) loadEntries() error {
 	err := dec.Decode(&s.entries)
 	if err != nil {
 		if err.Error() == "EOF" {
-			s.entries = []*entry{}
+			s.entries = []entry{}
 			return nil
 		}
 		return err
